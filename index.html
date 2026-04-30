@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Anonymous Message</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    url('bg.jpg') no-repeat center center;
+  background-size:cover;
+}
+
+.container{
+  width:90%;
+  max-width:420px;
+  padding:25px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1);
+  text-align:center;
+}
+
+h1{
+  color:#fff;
+  margin-bottom:10px;
+}
+
+.sub{
+  color:#aaa;
+  font-size:13px;
+  margin-bottom:20px;
+}
+
+textarea{
+  width:100%;
+  height:100px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  padding:12px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  resize:none;
+}
+
+button{
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#00f5d4;
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:#111;
+  color:#00f5d4;
+  padding:10px 18px;
+  border-radius:10px;
+  opacity:0;
+  transition:0.4s;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+
+.footer{
+  margin-top:10px;
+  font-size:11px;
+  color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Anonymous Message 💌</h1>
+  <div class="sub">Say anything 👀</div>
+
+  <textarea id="msg" placeholder="Type your message..."></textarea>
+
+  <button id="sendBtn">Send 🚀</button>
+
+  <div class="footer">Created by Shashi</div>
+</div>
+
+<!-- 🔊 SOUND -->
+<audio id="clickSound" src="click.mp3"></audio>
+
+<!-- 🔥 TOAST -->
+<div id="toast" class="toast">Message Sent</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+// 🔴 APNA CONFIG DAAL
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 BUTTON CLICK (NO BUG)
+document.getElementById("sendBtn").addEventListener("click", async () => {
+
+  let msg = document.getElementById("msg").value;
+
+  if(msg.trim()==="") return;
+
+  // 🔊 SOUND
+  let sound = document.getElementById("clickSound");
+  if(sound){
+    sound.currentTime = 0;
+    sound.volume = 1;
+    sound.play().catch(()=>{});
+  }
+
+  // 📳 VIBRATION
+  if(navigator.vibrate){
+    navigator.vibrate(100);
+  }
+
+  try{
+    await addDoc(collection(db,"messages"),{
+      text: msg,
+      time: Date.now()
+    });
+
+    document.getElementById("msg").value="";
+
+    // 🔥 TOAST
+    let toast = document.getElementById("toast");
+    toast.innerText = "Message Sent ✅";
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+      toast.classList.remove("show");
+    },2000);
+
+  }catch(e){
+    alert("Error: " + e.message);
+    console.log(e);
+  }
+
+});
+
+</script>
+
+</body>
+</html>
