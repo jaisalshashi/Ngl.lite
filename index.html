@@ -120,7 +120,7 @@ button:hover{
 
   <textarea id="msg" placeholder="Type your message..."></textarea>
 
-  <button onclick="sendMsg()">Send 🚀</button>
+  <button id="sendBtn">Send 🚀</button>
 
   <div class="footer">Created by Shashi</div>
 </div>
@@ -154,7 +154,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 🔥 SEND FUNCTION (IMPORTANT)
-window.sendMsg = async function(){
+document.getElementById("sendBtn").addEventListener("click", async () => {
+
   let msg = document.getElementById("msg").value;
 
   if(msg.trim()==="") return;
@@ -172,7 +173,8 @@ window.sendMsg = async function(){
     alert("Error: " + e.message);
     console.log(e);
   }
-}
+
+});
 </script>
 
 </body>
