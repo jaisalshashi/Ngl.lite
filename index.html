@@ -134,34 +134,44 @@ button:hover{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// 🔴 APNA FIREBASE CONFIG DAAL
+// 🔥 IMPORTS (important)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+// 🔴 TERA CONFIG (same rehne de)
 const firebaseConfig = {
-  apiKey: "AIzaSyBGsE_Z0iAKi-53395fE02kTO4SFKnkHY",
+  apiKey: "AIzaSyBGsE_Z0iAKi-53395fE02kTO4SFKnkHYY",
   authDomain: "anonymous-1c3db.firebaseapp.com",
   projectId: "anonymous-1c3db",
+  storageBucket: "anonymous-1c3db.firebasestorage.app",
+  messagingSenderId: "636989934464",
+  appId: "1:636989934464:web:064bbe1c2d0e648cba0f65",
+  measurementId: "G-205ZR4KNHK"
 };
 
+// 🔥 INIT
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function sendMsg(){
+// 🔥 SEND FUNCTION (IMPORTANT)
+window.sendMsg = async function(){
   let msg = document.getElementById("msg").value;
 
   if(msg.trim()==="") return;
 
-  // 🔊 sound play
-  document.getElementById("clickSound").play();
+  try{
+    await addDoc(collection(db,"messages"),{
+      text: msg,
+      time: Date.now()
+    });
 
-  await addDoc(collection(db,"messages"),{
-    text:msg,
-    time:Date.now()
-  });
+    document.getElementById("msg").value="";
+    alert("Message sent 🔥");
 
-  document.getElementById("msg").value="";
-
-  let toast=document.getElementById("toast");
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),2000);
+  }catch(e){
+    alert("Error: " + e.message);
+    console.log(e);
+  }
 }
 </script>
 
