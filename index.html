@@ -160,13 +160,12 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
     navigator.vibrate(100);
   }
 
-  try{
-    await addDoc(collection(db,"messages"),{
-      text: msg,
-      time: Date.now()
-    });
+  const username = "suraj";
 
-    document.getElementById("msg").value="";
+await addDoc(collection(db, "users", username, "messages"), {
+  text: msg,
+  time: Date.now()
+});
 
     // 🔥 TOAST
     let toast = document.getElementById("toast");
